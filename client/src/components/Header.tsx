@@ -1,4 +1,4 @@
-import { Bike, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
@@ -9,32 +9,42 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-white border-b-2 border-gray-200 shadow-sm">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center gap-2 group cursor-pointer">
-          <div className="bg-gradient-to-br from-red-500 to-orange-500 p-2 rounded-lg group-hover:scale-110 transition-transform">
-            <Bike className="w-6 h-6 text-white" />
-          </div>
+        <div className="flex items-center gap-3 group cursor-pointer">
+          <img 
+            src="/manus-storage/galo-logo_8dc14a0e.jpg" 
+            alt="Galo Express" 
+            className="w-12 h-12 rounded-lg group-hover:scale-110 transition-transform" 
+          />
           <div>
-            <h1 className="text-xl font-bold text-black">Galo Express</h1>
-            <p className="text-xs text-gray-600 font-semibold">Entregas Rápidas</p>
+            <h1 className="text-2xl font-bold text-black">Galo Express</h1>
+            <p className="text-xs text-gray-600 font-semibold">Campo Largo, PR</p>
           </div>
         </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8">
-          <a href="#simulator" className="text-gray-700 font-semibold hover:text-red-500 transition-colors">
+          <a href="#simulator" className="text-gray-700 font-semibold hover:text-orange-500 transition-colors">
             Simulador
           </a>
-          <a href="#features" className="text-gray-700 font-semibold hover:text-red-500 transition-colors">
+          <a href="#features" className="text-gray-700 font-semibold hover:text-orange-500 transition-colors">
             Serviços
           </a>
-          <a href="#contact" className="text-gray-700 font-semibold hover:text-red-500 transition-colors">
+          <a href="#contact" className="text-gray-700 font-semibold hover:text-orange-500 transition-colors">
             Contato
           </a>
         </nav>
 
         {/* CTA Button */}
         <div className="hidden md:flex items-center gap-4">
-          <Button className="bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+          <a 
+            href="https://wa.me/5541984167897" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-gray-700 font-semibold hover:text-orange-500 transition-colors flex items-center gap-1"
+          >
+            <span>📱</span> (41) 98416-7897
+          </a>
+          <Button className="bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
             Solicitar Entrega
           </Button>
         </div>
@@ -52,18 +62,23 @@ export default function Header() {
       {isOpen && (
         <div className="md:hidden border-t-2 border-gray-200 bg-white">
           <nav className="container mx-auto px-4 py-4 space-y-4">
-            <a href="#simulator" className="block text-gray-700 font-semibold hover:text-red-500 transition-colors">
+            <a href="#simulator" className="block text-gray-700 font-semibold hover:text-orange-500 transition-colors">
               Simulador
             </a>
-            <a href="#features" className="block text-gray-700 font-semibold hover:text-red-500 transition-colors">
+            <a href="#features" className="block text-gray-700 font-semibold hover:text-orange-500 transition-colors">
               Serviços
             </a>
-            <a href="#contact" className="block text-gray-700 font-semibold hover:text-red-500 transition-colors">
+            <a href="#contact" className="block text-gray-700 font-semibold hover:text-orange-500 transition-colors">
               Contato
             </a>
-            <Button className="w-full bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg">
-              Solicitar Entrega
-            </Button>
+            <a 
+              href="https://wa.me/5541984167897" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="block w-full bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg py-2 text-center transition-colors"
+            >
+              Chamar no WhatsApp
+            </a>
           </nav>
         </div>
       )}

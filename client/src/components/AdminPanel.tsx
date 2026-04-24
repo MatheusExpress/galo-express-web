@@ -41,8 +41,8 @@ export default function AdminPanel() {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
-      <Card className="w-full max-w-md border-2 border-red-500 shadow-2xl">
-        <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white p-6 flex items-center justify-between rounded-t-lg">
+      <Card className="w-full max-w-md border-2 border-orange-500 shadow-2xl">
+        <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 flex items-center justify-between rounded-t-lg">
           <div className="flex items-center gap-2">
             <Settings className="w-5 h-5" />
             <h2 className="text-xl font-bold">Painel Administrativo</h2>
@@ -65,7 +65,7 @@ export default function AdminPanel() {
               <button
                 onClick={() => setSettings({ ...settings, showPrices: !settings.showPrices })}
                 className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
-                  settings.showPrices ? 'bg-red-500' : 'bg-gray-300'
+                  settings.showPrices ? 'bg-orange-500' : 'bg-gray-300'
                 }`}
               >
                 <span
@@ -169,7 +169,7 @@ export default function AdminPanel() {
           {/* Close Button */}
           <Button
             onClick={() => setIsOpen(false)}
-            className="w-full bg-red-500 hover:bg-red-600 text-white font-bold"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold"
           >
             Fechar (Alt+A)
           </Button>

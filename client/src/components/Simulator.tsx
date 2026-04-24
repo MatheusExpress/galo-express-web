@@ -26,7 +26,7 @@ export default function Simulator() {
 
   const handleWhatsApp = () => {
     const message = `Olá! Gostaria de um orçamento para entrega:\n\nVeículo: ${vehicleType === 'motorcycle' ? 'Moto' : 'Carro'}\nDistância: ${distance} km\nValor: R$ ${totalPrice}`;
-    const whatsappUrl = `https://wa.me/5511999999999?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/5541984167897?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
@@ -39,7 +39,7 @@ export default function Simulator() {
       <div className="container relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold text-black mb-4">
-            Simule sua <span className="text-red-500">entrega</span>
+            Simule sua <span className="text-orange-500">entrega</span>
           </h2>
           <p className="text-lg text-gray-600">
             Calcule o valor do seu frete em segundos
@@ -110,7 +110,7 @@ export default function Simulator() {
 
               <Button
                 type="submit"
-                className="w-full h-12 bg-red-500 hover:bg-red-600 text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+                className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
               >
                 <Zap className="w-5 h-5 mr-2" />
                 Calcular entrega
@@ -120,28 +120,28 @@ export default function Simulator() {
 
           {/* Result */}
           {showResult && (
-            <Card className="p-8 border-2 border-red-500 bg-gradient-to-br from-red-50 to-orange-50 shadow-xl animate-in fade-in slide-in-from-right-4 duration-500">
+            <Card className="p-8 border-2 border-orange-500 bg-gradient-to-br from-orange-50 to-orange-50 shadow-xl animate-in fade-in slide-in-from-right-4 duration-500">
               <div className="space-y-6">
                 <h3 className="text-2xl font-bold text-black">Resultado da simulação</h3>
 
                 <div className="space-y-4 bg-white rounded-lg p-6 border border-gray-200">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 font-semibold">Veículo:</span>
-                    <span className="text-lg font-bold text-red-500">
+                    <span className="text-lg font-bold text-orange-500">
                       {vehicleType === 'motorcycle' ? '🏍️ Moto' : '🚗 Carro'}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 font-semibold">Distância estimada:</span>
-                    <span className="text-lg font-bold text-red-500">{distance} km</span>
+                    <span className="text-lg font-bold text-orange-500">{distance} km</span>
                   </div>
                   <div className="border-t border-gray-200 pt-4 flex justify-between items-center">
                     <span className="text-gray-600 font-semibold">Valor por km:</span>
-                    <span className="text-lg font-bold text-red-500">R$ {pricePerKm}</span>
+                    <span className="text-lg font-bold text-orange-500">R$ {pricePerKm}</span>
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-r from-red-500 to-orange-500 rounded-lg p-6 text-white">
+                <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-6 text-white">
                   <p className="text-sm font-semibold opacity-90 mb-1">Valor total</p>
                   <p className="text-4xl font-bold">R$ {totalPrice}</p>
                 </div>

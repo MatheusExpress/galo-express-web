@@ -50,7 +50,7 @@ export default function Features() {
       <div className="container relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold text-black mb-4">
-            Por que escolher a <span className="text-red-500">Galo Express</span>?
+            Por que escolher a <span className="text-orange-500">Galo Express</span>?
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Somos especialistas em entregas rápidas e confiáveis. Conheça os diferenciais que nos tornam a melhor escolha.
@@ -73,12 +73,12 @@ export default function Features() {
         </div>
 
         {/* CTA Section */}
-        <div className="mt-20 bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl p-12 text-white text-center shadow-2xl">
+        <div className="mt-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl p-12 text-white text-center shadow-2xl">
           <h3 className="text-3xl font-bold mb-4">Pronto para começar?</h3>
           <p className="text-lg opacity-90 mb-8 max-w-2xl mx-auto">
             Faça uma simulação agora e veja como podemos ajudar seu negócio a crescer com entregas rápidas e confiáveis.
           </p>
-          <button className="bg-white text-red-500 font-bold px-8 py-4 rounded-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg">
+          <button className="bg-white text-orange-500 font-bold px-8 py-4 rounded-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg">
             Começar Simulação
           </button>
         </div>
