@@ -36,14 +36,6 @@ export default function Header() {
 
         {/* CTA Button */}
         <div className="hidden md:flex items-center gap-4">
-          <a 
-            href="https://wa.me/5541984167897" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="text-gray-700 font-semibold hover:text-orange-500 transition-colors flex items-center gap-1"
-          >
-            <span>📱</span> (41) 98416-7897
-          </a>
           <Button className="bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
             Solicitar Entrega
           </Button>
@@ -71,14 +63,9 @@ export default function Header() {
             <a href="#contact" className="block text-gray-700 font-semibold hover:text-orange-500 transition-colors">
               Contato
             </a>
-            <a 
-              href="https://wa.me/5541984167897" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="block w-full bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg py-2 text-center transition-colors"
-            >
-              Chamar no WhatsApp
-            </a>
+            <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg">
+              Solicitar Entrega
+            </Button>
           </nav>
         </div>
       )}

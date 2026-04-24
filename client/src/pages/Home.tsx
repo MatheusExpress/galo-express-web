@@ -4,6 +4,7 @@ import Simulator from '@/components/Simulator';
 import Features from '@/components/Features';
 import Footer from '@/components/Footer';
 import AdminPanel from '@/components/AdminPanel';
+import FloatingWhatsApp from '@/components/FloatingWhatsApp';
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <Features />
       <Footer />
       <AdminPanel />
+      <FloatingWhatsApp />
     </div>
   );
 }
