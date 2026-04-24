@@ -1,37 +1,78 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card } from '@/components/ui/card';
-import { MessageCircle, Zap } from 'lucide-react';
+import { MessageCircle, Zap, AlertCircle } from 'lucide-react';
+
+interface AdminSettings {
+  showPrices: boolean;
+  priceMultiplier: number;
+}
 
 export default function Simulator() {
-  const [vehicleType, setVehicleType] = useState('motorcycle');
+  const [adminSettings, setAdminSettings] = useState<AdminSettings>({
+    showPrices: false,
+    priceMultiplier: 1
+  });
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
-  const [pricePerKm, setPricePerKm] = useState('2.50');
   const [distance, setDistance] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
+
+  // Carregar configurações do admin panel
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem('galo-admin-settings');
+      if (saved) {
+        const settings = JSON.parse(saved);
+        setAdminSettings(settings);
+      }
+    };
+
+    handleStorageChange();
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Verificar mudanças a cada 500ms
+    const interval = setInterval(handleStorageChange, 500);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simulated distance calculation (in real app, would use Google Maps API)
+    // Simulated distance calculation
     const simulatedDistance = Math.floor(Math.random() * 20) + 3;
     setDistance(simulatedDistance);
     setShowResult(true);
   };
 
-  const totalPrice = distance ? (distance * parseFloat(pricePerKm)).toFixed(2) : '0.00';
-
   const handleWhatsApp = () => {
-    const message = `Olá! Gostaria de um orçamento para entrega:\n\nVeículo: ${vehicleType === 'motorcycle' ? 'Moto' : 'Carro'}\nDistância: ${distance} km\nValor: R$ ${totalPrice}`;
+    const message = `🚚 *SOLICITAÇÃO DE ORÇAMENTO - GALO EXPRESS*
+
+📍 *Endereço de Coleta:*
+${origin}
+
+📍 *Endereço de Entrega:*
+${destination}
+
+📏 *Distância Estimada:*
+${distance} km
+
+💰 *Valor:* A confirmar
+
+---
+Aguardo confirmação do valor para encaminhar ao motoboy.`;
+    
     const whatsappUrl = `https://wa.me/5541984167897?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   return (
-    <section className="py-20 bg-white relative overflow-hidden">
+    <section id="simulator" className="py-20 bg-white relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-red-100/30 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-100/30 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
@@ -39,10 +80,10 @@ export default function Simulator() {
       <div className="container relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold text-black mb-4">
-            Simule sua <span className="text-orange-500">entrega</span>
+            Solicite seu <span className="text-orange-500">orçamento</span>
           </h2>
           <p className="text-lg text-gray-600">
-            Calcule o valor do seu frete em segundos
+            Preencha os endereços e receba uma proposta personalizada
           </p>
         </div>
 
@@ -52,22 +93,7 @@ export default function Simulator() {
             <form onSubmit={handleCalculate} className="space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Tipo de veículo
-                </label>
-                <Select value={vehicleType} onValueChange={setVehicleType}>
-                  <SelectTrigger className="w-full h-12 border-2 border-gray-300 rounded-lg">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="motorcycle">🏍️ Moto (Rápido e ágil)</SelectItem>
-                    <SelectItem value="car">🚗 Carro (Maior capacidade)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Endereço de origem
+                  📍 Endereço de coleta
                 </label>
                 <Input
                   type="text"
@@ -81,7 +107,7 @@ export default function Simulator() {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Endereço de destino
+                  📍 Endereço de entrega
                 </label>
                 <Input
                   type="text"
@@ -93,19 +119,14 @@ export default function Simulator() {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Valor por km (R$)
-                </label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={pricePerKm}
-                  onChange={(e) => setPricePerKm(e.target.value)}
-                  required
-                  className="h-12 border-2 border-gray-300 rounded-lg"
-                />
+              {/* Info message */}
+              <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
+                <div className="flex gap-2">
+                  <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-orange-700">
+                    <strong>Como funciona:</strong> Envie os endereços e receba um orçamento personalizado via WhatsApp em poucos minutos.
+                  </p>
+                </div>
               </div>
 
               <Button
@@ -113,7 +134,7 @@ export default function Simulator() {
                 className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
               >
                 <Zap className="w-5 h-5 mr-2" />
-                Calcular entrega
+                Solicitar Orçamento
               </Button>
             </form>
           </Card>
@@ -122,28 +143,33 @@ export default function Simulator() {
           {showResult && (
             <Card className="p-8 border-2 border-orange-500 bg-gradient-to-br from-orange-50 to-orange-50 shadow-xl animate-in fade-in slide-in-from-right-4 duration-500">
               <div className="space-y-6">
-                <h3 className="text-2xl font-bold text-black">Resultado da simulação</h3>
+                <h3 className="text-2xl font-bold text-black">✅ Orçamento Preparado</h3>
 
                 <div className="space-y-4 bg-white rounded-lg p-6 border border-gray-200">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 font-semibold">Veículo:</span>
-                    <span className="text-lg font-bold text-orange-500">
-                      {vehicleType === 'motorcycle' ? '🏍️ Moto' : '🚗 Carro'}
-                    </span>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 uppercase">Coleta</p>
+                      <p className="text-sm text-gray-800 font-medium">{origin}</p>
+                    </div>
+                    <div className="flex justify-center">
+                      <div className="text-orange-500 text-2xl">↓</div>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 uppercase">Entrega</p>
+                      <p className="text-sm text-gray-800 font-medium">{destination}</p>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 font-semibold">Distância estimada:</span>
-                    <span className="text-lg font-bold text-orange-500">{distance} km</span>
-                  </div>
-                  <div className="border-t border-gray-200 pt-4 flex justify-between items-center">
-                    <span className="text-gray-600 font-semibold">Valor por km:</span>
-                    <span className="text-lg font-bold text-orange-500">R$ {pricePerKm}</span>
+                  
+                  <div className="border-t border-gray-200 pt-4">
+                    <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Distância Estimada</p>
+                    <p className="text-2xl font-bold text-orange-500">{distance} km</p>
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-6 text-white">
-                  <p className="text-sm font-semibold opacity-90 mb-1">Valor total</p>
-                  <p className="text-4xl font-bold">R$ {totalPrice}</p>
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                  <p className="text-sm text-blue-700">
+                    <strong>📱 Próximo passo:</strong> Clique no botão abaixo para enviar os endereços via WhatsApp. Você receberá um orçamento personalizado em breve!
+                  </p>
                 </div>
 
                 <Button
@@ -151,11 +177,11 @@ export default function Simulator() {
                   className="w-full h-12 bg-green-500 hover:bg-green-600 text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all"
                 >
                   <MessageCircle className="w-5 h-5 mr-2" />
-                  Enviar orçamento pelo WhatsApp
+                  Enviar via WhatsApp
                 </Button>
 
                 <p className="text-xs text-gray-500 text-center">
-                  * Distância é uma estimativa. O valor final pode variar conforme a rota.
+                  * Você será redirecionado para o WhatsApp com a mensagem pronta
                 </p>
               </div>
             </Card>
@@ -166,13 +192,25 @@ export default function Simulator() {
             <Card className="p-8 border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center h-96">
               <div className="text-center">
                 <div className="text-5xl mb-4">📦</div>
-                <p className="text-gray-600 font-semibold">
-                  Preencha o formulário e veja o resultado aqui
+                <p className="text-gray-600 font-semibold mb-2">
+                  Preencha os endereços
+                </p>
+                <p className="text-sm text-gray-500">
+                  e veja a prévia do seu orçamento aqui
                 </p>
               </div>
             </Card>
           )}
         </div>
+
+        {/* Admin Info */}
+        {!adminSettings.showPrices && (
+          <div className="mt-12 bg-gradient-to-r from-gray-50 to-gray-100 border-2 border-gray-300 rounded-lg p-6 text-center">
+            <p className="text-gray-700 font-semibold">
+              ℹ️ <strong>Modo de Orçamento Ativo:</strong> Os clientes enviam os endereços e você define os valores via WhatsApp.
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );
