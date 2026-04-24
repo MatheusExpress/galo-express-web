@@ -8,6 +8,8 @@ interface AdminSettings {
   showPrices: boolean;
   priceMultiplier: number;
   maintenanceMode: boolean;
+  blockOutsideHours: boolean;
+  theme: 'light' | 'dark';
 }
 
 export default function AdminPanel() {
@@ -17,7 +19,9 @@ export default function AdminPanel() {
     return saved ? JSON.parse(saved) : {
       showPrices: false,
       priceMultiplier: 1,
-      maintenanceMode: false
+      maintenanceMode: false,
+      blockOutsideHours: true,
+      theme: 'light'
     };
   });
 
@@ -37,6 +41,13 @@ export default function AdminPanel() {
     localStorage.setItem('galo-admin-settings', JSON.stringify(settings));
     // Disparar evento de storage para atualizar componentes
     window.dispatchEvent(new Event('storage'));
+    
+    // Aplicar tema ao documento
+    if (settings.theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   }, [settings]);
 
   if (!isOpen) return null;
@@ -159,6 +170,64 @@ export default function AdminPanel() {
             </p>
           </div>
 
+          {/* Block Outside Hours */}
+          <div className="space-y-2 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <label className="block text-sm font-semibold text-gray-700">
+              Bloquear fora do horário
+            </label>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setSettings({ ...settings, blockOutsideHours: !settings.blockOutsideHours })}
+                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                  settings.blockOutsideHours ? 'bg-orange-500' : 'bg-gray-300'
+                }`}
+              >
+                <span
+                  className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                    settings.blockOutsideHours ? 'translate-x-7' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+              <span className="text-sm text-gray-600">
+                {settings.blockOutsideHours ? 'Ativado' : 'Desativado'}
+              </span>
+            </div>
+            <p className="text-xs text-gray-500">
+              {settings.blockOutsideHours 
+                ? '✓ Formulário bloqueado fora do horário' 
+                : '✓ Formulário liberado 24/7 (clientes podem solicitar qualquer hora)'}
+            </p>
+          </div>
+
+          {/* Theme Toggle */}
+          <div className="space-y-2 p-4 bg-purple-50 rounded-lg border border-purple-200">
+            <label className="block text-sm font-semibold text-gray-700">
+              Tema do Site
+            </label>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setSettings({ ...settings, theme: settings.theme === 'light' ? 'dark' : 'light' })}
+                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                  settings.theme === 'dark' ? 'bg-orange-500' : 'bg-gray-300'
+                }`}
+              >
+                <span
+                  className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                    settings.theme === 'dark' ? 'translate-x-7' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+              <span className="text-sm text-gray-600">
+                {settings.theme === 'dark' ? '🌟 Escuro' : '☀️ Claro'}
+              </span>
+            </div>
+            <p className="text-xs text-gray-500">
+              {settings.theme === 'dark'
+                ? '✓ Tema escuro ativado para melhor visualização noturna'
+                : '✓ Tema claro ativado para melhor visualização diurna'}
+            </p>
+          </div>
+
           {/* Status Info */}
           <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
             <h3 className="text-sm font-bold text-gray-700 mb-3">📊 Status do Sistema</h3>
@@ -189,6 +258,8 @@ export default function AdminPanel() {
               <li>• Modo Orçamento: <strong>{settings.showPrices ? 'COM preço/km' : 'SEM preço/km'}</strong></li>
               <li>• Multiplicador: <strong>{(settings.priceMultiplier * 100).toFixed(0)}%</strong></li>
               <li>• Manutenção: <strong>{settings.maintenanceMode ? 'ATIVA' : 'Inativa'}</strong></li>
+              <li>• Bloqueio por Horário: <strong>{settings.blockOutsideHours ? 'ATIVO' : 'Inativo'}</strong></li>
+              <li>• Tema: <strong>{settings.theme === 'dark' ? 'ESCURO' : 'CLARO'}</strong></li>
             </ul>
           </div>
 
@@ -198,7 +269,9 @@ export default function AdminPanel() {
               setSettings({
                 showPrices: false,
                 priceMultiplier: 1,
-                maintenanceMode: false
+                maintenanceMode: false,
+                blockOutsideHours: true,
+                theme: 'light'
               });
             }}
             variant="outline"
