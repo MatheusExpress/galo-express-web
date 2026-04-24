@@ -43,39 +43,45 @@
 }
 
 :root {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-600);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
+  /* Galo Express Brand Colors */
+  --primary: #EF4444;
+  --primary-foreground: #FFFFFF;
+  --secondary: #FF8C00;
+  --secondary-foreground: #FFFFFF;
+  --accent: #FF8C00;
+  --accent-foreground: #FFFFFF;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  
+  /* Sidebar colors */
+  --sidebar-primary: #EF4444;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #FF8C00;
+  --sidebar-accent-foreground: #FFFFFF;
+  
+  /* Chart colors */
+  --chart-1: #EF4444;
+  --chart-2: #FF8C00;
+  --chart-3: #1A1A1A;
+  --chart-4: #2D2D2D;
+  --chart-5: #FFFFFF;
+  
   --radius: 0.65rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.235 0.015 65);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.235 0.015 65);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.235 0.015 65);
-  --secondary: oklch(0.98 0.001 286.375);
-  --secondary-foreground: oklch(0.4 0.015 65);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.141 0.005 285.823);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.623 0.214 259.815);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.235 0.015 65);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.623 0.214 259.815);
+  --background: #FFFFFF;
+  --foreground: #1A1A1A;
+  --card: #FFFFFF;
+  --card-foreground: #1A1A1A;
+  --popover: #FFFFFF;
+  --popover-foreground: #1A1A1A;
+  --muted: #F3F4F6;
+  --muted-foreground: #6B7280;
+  --border: #E5E7EB;
+  --input: #F3F4F6;
+  --ring: #EF4444;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1A1A1A;
+  --sidebar-border: #E5E7EB;
+  --sidebar-ring: #EF4444;
 }
 
 .dark {
@@ -118,7 +124,13 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
@@ -153,6 +165,7 @@
     margin-right: auto;
     padding-left: 1rem; /* 16px - mobile padding */
     padding-right: 1rem;
+    max-width: 1400px;
   }
 
   .flex {
