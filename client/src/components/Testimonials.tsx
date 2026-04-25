@@ -13,42 +13,42 @@ const testimonials: Testimonial[] = [
   {
     name: 'João Silva',
     company: 'Silva Comércio',
-    text: 'Excelente serviço! Entrega rápida e profissional. Recomendo muito a Galo Express!',
+    text: 'Entrega rápida de materiais de construção. Chegaram intactos e no prazo!',
     rating: 5,
     avatar: '👨‍💼',
   },
   {
     name: 'Maria Santos',
-    company: 'Loja Maria',
-    text: 'Melhor motoboy de Campo Largo. Sempre pontual e cuidadoso com os pedidos.',
+    company: 'Gráfica Santos',
+    text: 'Excelente para entregas de documentos urgentes. Muito confiável!',
     rating: 5,
     avatar: '👩‍💼',
   },
   {
     name: 'Carlos Oliveira',
-    company: 'Carlos Distribuidora',
-    text: 'Uso a Galo Express há 6 meses. Preço justo e entrega garantida!',
+    company: 'Indústria Oliveira',
+    text: 'Uso há 6 meses para entregas de peças. Profissional e pontual!',
     rating: 5,
     avatar: '👨‍💼',
   },
   {
     name: 'Ana Costa',
-    company: 'Farmácia Costa',
-    text: 'Confiável, rápido e muito profissional. Meus clientes adoram!',
+    company: 'Escritório Contábil',
+    text: 'Perfeito para documentação. Seguro e rápido. Recomendo!',
     rating: 5,
     avatar: '👩‍💼',
   },
   {
     name: 'Pedro Mendes',
-    company: 'Restaurante Mendes',
-    text: 'Perfeito para entregas de comida. Chegam quentinhas e no horário!',
+    company: 'Distribuidora Mendes',
+    text: 'Entregas de amostras e materiais. Chegam sempre em perfeito estado!',
     rating: 5,
     avatar: '👨‍💼',
   },
   {
     name: 'Lucia Ferreira',
-    company: 'Escritório Ferreira',
-    text: 'Serviço impecável. Sempre que preciso de uma entrega urgente, chamo a Galo!',
+    company: 'Consultoria Ferreira',
+    text: 'Urgência? Chamo a Galo! Nunca me deixou na mão com prazos apertados.',
     rating: 5,
     avatar: '👩‍💼',
   },
@@ -63,6 +63,11 @@ export default function Testimonials() {
 
   const prev = () => {
     setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  };
+
+  const scrollToSimulator = () => {
+    const element = document.getElementById('simulator');
+    element?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const current = testimonials[currentIndex];
@@ -135,6 +140,16 @@ export default function Testimonials() {
           <p className="text-center text-gray-600 dark:text-gray-400 text-sm mt-4">
             {currentIndex + 1} de {testimonials.length}
           </p>
+        </div>
+
+        {/* CTA Button */}
+        <div className="text-center mt-12">
+          <button
+            onClick={scrollToSimulator}
+            className="px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+          >
+            Solicitar Orçamento Agora
+          </button>
         </div>
       </div>
     </section>

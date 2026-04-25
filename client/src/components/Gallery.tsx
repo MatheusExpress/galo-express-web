@@ -1,133 +1,78 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState } from 'react';
-
-const galleryItems = [
-  {
-    title: 'Moto Pronta para Entrega',
-    description: 'Nossa frota está sempre pronta para atender',
-    emoji: '🏍️',
-    color: 'from-orange-400 to-red-500',
-  },
-  {
-    title: 'Entrega Rápida',
-    description: 'Chegamos em tempo recorde',
-    emoji: '⚡',
-    color: 'from-yellow-400 to-orange-500',
-  },
-  {
-    title: 'Segurança Garantida',
-    description: 'Seus pedidos chegam com segurança',
-    emoji: '🛡️',
-    color: 'from-green-400 to-blue-500',
-  },
-  {
-    title: 'Profissionalismo',
-    description: 'Motoboys treinados e uniformizados',
-    emoji: '👨‍💼',
-    color: 'from-blue-400 to-purple-500',
-  },
-  {
-    title: 'Cobertura Total',
-    description: 'Atendemos toda a região',
-    emoji: '🗺️',
-    color: 'from-purple-400 to-pink-500',
-  },
-  {
-    title: 'Disponibilidade',
-    description: 'Sempre pronto para você',
-    emoji: '📱',
-    color: 'from-pink-400 to-red-500',
-  },
-];
+import { CheckCircle } from 'lucide-react';
 
 export default function Gallery() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const next = () => {
-    setCurrentIndex((prev) => (prev + 1) % galleryItems.length);
-  };
-
-  const prev = () => {
-    setCurrentIndex((prev) => (prev - 1 + galleryItems.length) % galleryItems.length);
-  };
+  const features = [
+    {
+      icon: '🚀',
+      title: 'Rápido',
+      description: 'Entregas em tempo recorde, sempre pontual',
+    },
+    {
+      icon: '💰',
+      title: 'Econômico',
+      description: 'Preços justos e sem taxas escondidas',
+    },
+    {
+      icon: '✅',
+      title: 'Confiável',
+      description: 'Rastreamento em tempo real da sua entrega',
+    },
+    {
+      icon: '🛡️',
+      title: 'Seguro',
+      description: 'Seus materiais chegam intactos',
+    },
+  ];
 
   return (
-    <section className="py-16 bg-gradient-to-br from-gray-900 to-black">
+    <section className="py-16 bg-white dark:bg-gray-800 transition-colors duration-300">
       <div className="container">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-white mb-4">
-            Conheça Nosso Serviço
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Por que escolher a Galo Express?
           </h2>
-          <p className="text-gray-400">
-            Veja o que torna a Galo Express especial
+          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Somos especializados em entregas profissionais de materiais, documentos e peças
           </p>
         </div>
 
-        {/* Gallery Carousel */}
-        <div className="max-w-4xl mx-auto">
-          <div className="relative">
-            {/* Main Image */}
-            <div className={`bg-gradient-to-br ${galleryItems[currentIndex].color} rounded-lg p-12 text-center min-h-96 flex flex-col items-center justify-center shadow-2xl`}>
-              <div className="text-8xl mb-6 animate-bounce">
-                {galleryItems[currentIndex].emoji}
-              </div>
-              <h3 className="text-3xl font-bold text-white mb-2">
-                {galleryItems[currentIndex].title}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {features.map((feature, i) => (
+            <div
+              key={i}
+              className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-600 transition-colors text-center"
+            >
+              <div className="text-5xl mb-4">{feature.icon}</div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                {feature.title}
               </h3>
-              <p className="text-lg text-white/90">
-                {galleryItems[currentIndex].description}
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {feature.description}
               </p>
             </div>
-
-            {/* Navigation Buttons */}
-            <button
-              onClick={prev}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-16 p-3 bg-orange-500 hover:bg-orange-600 text-white rounded-full transition-all transform hover:scale-110"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            <button
-              onClick={next}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 p-3 bg-orange-500 hover:bg-orange-600 text-white rounded-full transition-all transform hover:scale-110"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-          </div>
-
-          {/* Dots Navigation */}
-          <div className="flex justify-center gap-2 mt-8">
-            {galleryItems.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentIndex(i)}
-                className={`w-3 h-3 rounded-full transition-all ${
-                  i === currentIndex
-                    ? 'bg-orange-500 w-8'
-                    : 'bg-gray-600 hover:bg-gray-500'
-                }`}
-              />
-            ))}
-          </div>
-
-          {/* Counter */}
-          <p className="text-center text-gray-400 text-sm mt-4">
-            {currentIndex + 1} de {galleryItems.length}
-          </p>
+          ))}
         </div>
 
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-6 mt-16">
-          {[
-            { icon: '🚀', title: 'Rápido', desc: 'Entregas em tempo recorde' },
-            { icon: '💰', title: 'Econômico', desc: 'Preços justos e competitivos' },
-            { icon: '✅', title: 'Confiável', desc: 'Sempre no horário' },
-          ].map((feature, i) => (
-            <div key={i} className="bg-gray-800 rounded-lg p-6 text-center hover:bg-gray-700 transition-colors">
-              <div className="text-4xl mb-3">{feature.icon}</div>
-              <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
-              <p className="text-gray-400">{feature.desc}</p>
-            </div>
-          ))}
+        {/* Specialties */}
+        <div className="mt-16 p-8 bg-gradient-to-r from-orange-50 to-yellow-50 dark:from-orange-900/20 dark:to-yellow-900/20 rounded-lg border border-orange-200 dark:border-orange-600">
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+            Especialidades de Entrega
+          </h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            {[
+              'Documentos e correspondências urgentes',
+              'Materiais de construção e peças',
+              'Amostras e catálogos',
+              'Equipamentos e máquinas',
+              'Medicamentos e produtos farmacêuticos',
+              'Eletrônicos e componentes',
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <CheckCircle className="w-5 h-5 text-orange-500 flex-shrink-0" />
+                <span className="text-gray-700 dark:text-gray-300">{item}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

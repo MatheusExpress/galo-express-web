@@ -36,6 +36,10 @@ export default function Hero() {
               <Button 
                 size="lg" 
                 className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg h-14 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+                onClick={() => {
+                  const element = document.getElementById('simulator');
+                  element?.scrollIntoView({ behavior: 'smooth' });
+                }}
               >
                 Começar Simulação
               </Button>
@@ -43,6 +47,10 @@ export default function Hero() {
                 size="lg" 
                 variant="outline" 
                 className="border-2 border-orange-500 text-orange-500 hover:bg-orange-50 font-bold text-lg h-14 rounded-lg"
+                onClick={() => {
+                  const element = document.getElementById('simulator');
+                  element?.scrollIntoView({ behavior: 'smooth' });
+                }}
               >
                 Saiba Mais
               </Button>

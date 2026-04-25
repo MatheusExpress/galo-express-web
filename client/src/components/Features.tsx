@@ -6,37 +6,25 @@ export default function Features() {
     {
       icon: <Zap className="w-12 h-12" />,
       title: 'Rapidez',
-      description: 'Entregas em tempo recorde para atender suas demandas urgentes com máxima agilidade.',
-      color: 'from-red-500 to-orange-500'
+      description: 'Entregas em tempo recorde para atender suas demandas urgentes.',
+      color: 'from-orange-500 to-red-500'
     },
     {
       icon: <Shield className="w-12 h-12" />,
       title: 'Segurança',
-      description: 'Seu pacote rastreado e protegido durante todo o trajeto com tecnologia de ponta.',
+      description: 'Rastreamento em tempo real durante todo o trajeto.',
       color: 'from-orange-500 to-red-500'
     },
     {
       icon: <DollarSign className="w-12 h-12" />,
-      title: 'Melhor Preço',
-      description: 'Tarifas justas e transparentes, sem surpresas ou cobranças ocultas.',
-      color: 'from-red-500 to-orange-500'
-    },
-    {
-      icon: <Clock className="w-12 h-12" />,
-      title: 'Disponível 24/7',
-      description: 'Contamos com equipe disponível todos os dias, a qualquer hora do dia.',
+      title: 'Preços Justos',
+      description: 'Tarifas transparentes, sem cobranças ocultas.',
       color: 'from-orange-500 to-red-500'
     },
     {
       icon: <MapPin className="w-12 h-12" />,
       title: 'Cobertura Total',
-      description: 'Atendemos toda a região com moto e carro para qualquer tipo de entrega.',
-      color: 'from-red-500 to-orange-500'
-    },
-    {
-      icon: <Bike className="w-12 h-12" />,
-      title: 'Foco em Motos',
-      description: 'Especialistas em entregas rápidas com motos, nosso principal diferencial.',
+      description: 'Atendemos Campo Largo e região metropolitana.',
       color: 'from-orange-500 to-red-500'
     }
   ];
@@ -57,7 +45,7 @@ export default function Features() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
             <Card
               key={index}
@@ -78,7 +66,13 @@ export default function Features() {
           <p className="text-lg opacity-90 mb-8 max-w-2xl mx-auto">
             Faça uma simulação agora e veja como podemos ajudar seu negócio a crescer com entregas rápidas e confiáveis.
           </p>
-          <button className="bg-white text-orange-500 font-bold px-8 py-4 rounded-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg">
+          <button 
+            onClick={() => {
+              const element = document.getElementById('simulator');
+              element?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="bg-white text-orange-500 font-bold px-8 py-4 rounded-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg"
+          >
             Começar Simulação
           </button>
         </div>
