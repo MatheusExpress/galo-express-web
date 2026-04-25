@@ -4,6 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { MessageCircle, Zap, AlertCircle, Clock } from 'lucide-react';
 import { useBusinessHours } from '@/hooks/useBusinessHours';
+import { useGeocoding } from '@/hooks/useGeocoding';
+
 interface AdminSettings {
   showPrices: boolean;
   priceMultiplier: number;
@@ -11,10 +13,10 @@ interface AdminSettings {
   theme: 'light' | 'dark';
 }
 
-
-
 export default function Simulator() {
   const businessHours = useBusinessHours();
+  const { calculateDistance, loading: geoLoading, error: geoError, setError: setGeoError } = useGeocoding();
+  
   const [adminSettings, setAdminSettings] = useState<AdminSettings>({
     showPrices: false,
     priceMultiplier: 1,
@@ -27,7 +29,6 @@ export default function Simulator() {
   const [showResult, setShowResult] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const directionsServiceRef = useRef<any>(null);
 
   // Carregar configurações do admin panel
   useEffect(() => {
@@ -50,62 +51,6 @@ export default function Simulator() {
     };
   }, []);
 
-  // Inicializar Google Maps Directions Service
-  useEffect(() => {
-    if (window.google && window.google.maps) {
-      directionsServiceRef.current = new window.google.maps.DirectionsService();
-    }
-  }, []);
-
-  const calculateDistance = async (originAddress: string, destinationAddress: string) => {
-    if (!directionsServiceRef.current) {
-      setError('Google Maps não está disponível. Tente novamente.');
-      return null;
-    }
-
-    try {
-      setLoading(true);
-      setError('');
-
-      const result = await directionsServiceRef.current.route({
-        origin: originAddress,
-        destination: destinationAddress,
-        travelMode: window.google.maps.TravelMode.DRIVING,
-        region: 'BR'
-      });
-
-      if (result.routes.length > 0) {
-        const route = result.routes[0];
-        const leg = route.legs[0];
-        
-        // Distância em metros, converter para km
-        const distanceInKm = Math.round((leg.distance.value / 1000) * 10) / 10;
-        
-        return distanceInKm;
-      } else {
-        setError('Não foi possível calcular a rota. Verifique os endereços.');
-        return null;
-      }
-    } catch (err: any) {
-      let errorMessage = 'Erro ao calcular distância. ';
-      
-      if (err.message?.includes('ZERO_RESULTS')) {
-        errorMessage += 'Endereço não encontrado. Verifique a digitação.';
-      } else if (err.message?.includes('NOT_FOUND')) {
-        errorMessage += 'Um ou ambos os endereços não foram encontrados.';
-      } else if (err.message?.includes('INVALID_REQUEST')) {
-        errorMessage += 'Requisição inválida. Verifique os endereços.';
-      } else {
-        errorMessage += 'Tente novamente.';
-      }
-      
-      setError(errorMessage);
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleCalculate = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -114,224 +59,195 @@ export default function Simulator() {
       return;
     }
 
+    if (!origin.trim() || !destination.trim()) {
+      setError('Por favor, preencha ambos os endereços');
+      return;
+    }
+
     setError('');
     setLoading(true);
 
-    const calculatedDistance = await calculateDistance(origin, destination);
-    
-    if (calculatedDistance !== null) {
-      setDistance(calculatedDistance);
-      setShowResult(true);
-    }
+    try {
+      const dist = await calculateDistance(origin, destination);
+      
+      if (dist === null) {
+        setError(geoError || 'Não conseguimos calcular a distância. Tente endereços mais específicos.');
+        setLoading(false);
+        return;
+      }
 
-    setLoading(false);
+      setDistance(dist);
+      setShowResult(true);
+      setLoading(false);
+    } catch (err) {
+      setError('Erro ao calcular distância. Tente novamente.');
+      setLoading(false);
+    }
   };
 
-  const handleWhatsApp = () => {
-    const message = `🚚 *SOLICITAÇÃO DE ORÇAMENTO - GALO EXPRESS*
+  const handleSendWhatsApp = () => {
+    if (!distance) return;
 
-📍 *Endereço de Coleta:*
-${origin}
+    const pricePerKm = 2.5; // Preço padrão por km
+    const estimatedPrice = (distance * pricePerKm * adminSettings.priceMultiplier).toFixed(2);
 
-📍 *Endereço de Entrega:*
-${destination}
+    const message = `🚚 *SOLICITAÇÃO DE ORÇAMENTO - GALO EXPRESS*\n\n📍 *Endereço de Coleta:*\n${origin}\n\n📍 *Endereço de Entrega:*\n${destination}\n\n📏 *Distância:*\n${distance.toFixed(1)} km\n\n💰 *Valor: A confirmar*\n\n---\nCampo Largo, PR\n(41) 98416-7897`;
 
-📏 *Distância:*
-${distance} km
-
-💰 *Valor:* A confirmar
-
----
-Aguardo confirmação do valor para encaminhar ao motoboy.`;
-    
     const whatsappUrl = `https://wa.me/5541984167897?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
-  return (
-    <section id="simulator" className="py-20 bg-white relative overflow-hidden">
-      {/* Decorative elements */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-red-100/30 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-100/30 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+  const isDarkMode = adminSettings.theme === 'dark';
+  const bgClass = isDarkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-orange-50 to-yellow-50';
+  const textClass = isDarkMode ? 'text-gray-100' : 'text-gray-900';
+  const cardBgClass = isDarkMode ? 'bg-gray-800' : 'bg-white';
+  const borderClass = isDarkMode ? 'border-gray-700' : 'border-orange-200';
+  const inputBgClass = isDarkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-white border-orange-200';
 
-      <div className="container relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-black mb-4">
-            Solicite seu <span className="text-orange-500">orçamento</span>
+  return (
+    <section id="simulator" className={`py-16 ${bgClass} transition-colors duration-300`}>
+      <div className="container">
+        <div className="text-center mb-12">
+          <h2 className={`text-4xl font-bold ${textClass} mb-4`}>
+            Simule seu Frete
           </h2>
-          <p className="text-lg text-gray-600">
-            Preencha os endereços e receba uma proposta personalizada
+          <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+            Calcule a distância e receba um orçamento personalizado
           </p>
         </div>
 
-        {/* Status de Horário */}
-        <div className={`mb-8 p-4 rounded-lg border-l-4 flex items-start gap-3 ${
-          businessHours.isOpen 
-            ? 'bg-green-50 border-green-500' 
-            : 'bg-orange-50 border-orange-500'
-        }`}>
-          <Clock className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
-            businessHours.isOpen ? 'text-green-600' : 'text-orange-600'
-          }`} />
-          <div>
-            <p className={`font-semibold ${
-              businessHours.isOpen ? 'text-green-700' : 'text-orange-700'
-            }`}>
-              {businessHours.message}
-            </p>
-            {businessHours.nextOpenTime && (
-              <p className={`text-sm ${
-                businessHours.isOpen ? 'text-green-600' : 'text-orange-600'
-              }`}>
-                {businessHours.nextOpenTime}
-              </p>
-            )}
-            <p className="text-xs text-gray-600 mt-1">
-              📅 Seg-Sex: 7:00 - 18:00 | Sábado: 8:00 - 12:00
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Form */}
-          <Card className="p-8 border-2 border-gray-200 shadow-lg">
-            <form onSubmit={handleCalculate} className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  📍 Endereço de coleta
-                </label>
-                <Input
-                  type="text"
-                  placeholder="Ex: Rua A, 123 - Centro, Campo Largo"
-                  value={origin}
-                  onChange={(e) => setOrigin(e.target.value)}
-                  required
-                  disabled={loading}
-                  className="h-12 border-2 border-gray-300 rounded-lg"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  📍 Endereço de entrega
-                </label>
-                <Input
-                  type="text"
-                  placeholder="Ex: Av. B, 456 - Bairro, Campo Largo"
-                  value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                  required
-                  disabled={loading}
-                  className="h-12 border-2 border-gray-300 rounded-lg"
-                />
-              </div>
-
-              {/* Error Message */}
-              {error && (
-                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
-                  <div className="flex gap-2">
-                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-red-700">{error}</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Info message */}
-              {!error && (
-                <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
-                  <div className="flex gap-2">
-                    <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-orange-700">
-                      <strong>Como funciona:</strong> Envie os endereços e receba um orçamento personalizado via WhatsApp em poucos minutos.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              <Button
-                type="submit"
-                disabled={loading || (!businessHours.isOpen && adminSettings.blockOutsideHours)}
-                className="w-full h-12 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-400 text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:hover:scale-100"
-              >
-                <Zap className="w-5 h-5 mr-2" />
-                {loading ? 'Calculando distância...' : 'Solicitar Orçamento'}
-              </Button>
-            </form>
-          </Card>
-
-          {/* Result */}
-          {showResult && (
-            <Card className="p-8 border-2 border-orange-500 bg-gradient-to-br from-orange-50 to-orange-50 shadow-xl animate-in fade-in slide-in-from-right-4 duration-500">
-              <div className="space-y-6">
-                <h3 className="text-2xl font-bold text-black">✅ Orçamento Preparado</h3>
-
-                <div className="space-y-4 bg-white rounded-lg p-6 border border-gray-200">
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-xs font-semibold text-gray-500 uppercase">Coleta</p>
-                      <p className="text-sm text-gray-800 font-medium">{origin}</p>
-                    </div>
-                    <div className="flex justify-center">
-                      <div className="text-orange-500 text-2xl">↓</div>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-gray-500 uppercase">Entrega</p>
-                      <p className="text-sm text-gray-800 font-medium">{destination}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="border-t border-gray-200 pt-4">
-                    <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Distância Calculada</p>
-                    <p className="text-2xl font-bold text-orange-500">{distance} km</p>
-                    <p className="text-xs text-gray-500 mt-1">✓ Calculada via Google Maps</p>
-                  </div>
-                </div>
-
-                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                  <p className="text-sm text-blue-700">
-                    <strong>📱 Próximo passo:</strong> Clique no botão abaixo para enviar os endereços via WhatsApp. Você receberá um orçamento personalizado em breve!
-                  </p>
-                </div>
-
-                <Button
-                  onClick={handleWhatsApp}
-                  className="w-full h-12 bg-green-500 hover:bg-green-600 text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all"
-                >
-                  <MessageCircle className="w-5 h-5 mr-2" />
-                  Enviar via WhatsApp
-                </Button>
-
-                <p className="text-xs text-gray-500 text-center">
-                  * Você será redirecionado para o WhatsApp com a mensagem pronta
-                </p>
-              </div>
-            </Card>
-          )}
-
-          {/* Empty state */}
-          {!showResult && (
-            <Card className="p-8 border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center h-96">
-              <div className="text-center">
-                <div className="text-5xl mb-4">📦</div>
-                <p className="text-gray-600 font-semibold mb-2">
-                  Preencha os endereços
-                </p>
-                <p className="text-sm text-gray-500">
-                  e veja a prévia do seu orçamento aqui
-                </p>
-              </div>
-            </Card>
-          )}
-        </div>
-
-        {/* Admin Info */}
-        {!adminSettings.showPrices && (
-          <div className="mt-12 bg-gradient-to-r from-gray-50 to-gray-100 border-2 border-gray-300 rounded-lg p-6 text-center">
-            <p className="text-gray-700 font-semibold">
-              ℹ️ <strong>Modo de Orçamento Ativo:</strong> Os clientes enviam os endereços e você define os valores via WhatsApp.
+        {!businessHours.isOpen && adminSettings.blockOutsideHours && (
+          <div className="max-w-2xl mx-auto mb-6 p-4 bg-yellow-100 border-2 border-yellow-400 rounded-lg">
+            <p className="text-yellow-800 font-semibold">
+              ⏰ Estamos fechados. Reabrimos {businessHours.nextOpenTime}
             </p>
           </div>
         )}
+
+        <Card className={`max-w-2xl mx-auto p-8 ${cardBgClass} border-2 ${borderClass}`}>
+          <form onSubmit={handleCalculate} className="space-y-6">
+            {/* Origin Address */}
+            <div className="space-y-2">
+              <label className={`block text-sm font-semibold ${textClass}`}>
+                📍 Endereço de Coleta
+              </label>
+              <Input
+                type="text"
+                placeholder="Ex: Rua das Flores, 123, Centro, Campo Largo"
+                value={origin}
+                onChange={(e) => setOrigin(e.target.value)}
+                disabled={loading || (!businessHours.isOpen && adminSettings.blockOutsideHours)}
+                className={`h-12 ${inputBgClass} placeholder-gray-500 font-medium`}
+              />
+              <p className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                Inclua rua, número, bairro e cidade
+              </p>
+            </div>
+
+            {/* Destination Address */}
+            <div className="space-y-2">
+              <label className={`block text-sm font-semibold ${textClass}`}>
+                📍 Endereço de Entrega
+              </label>
+              <Input
+                type="text"
+                placeholder="Ex: Avenida Brasil, 456, Xaxim, Campo Largo"
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+                disabled={loading || (!businessHours.isOpen && adminSettings.blockOutsideHours)}
+                className={`h-12 ${inputBgClass} placeholder-gray-500 font-medium`}
+              />
+              <p className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                Inclua rua, número, bairro e cidade
+              </p>
+            </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="p-4 bg-red-100 border-l-4 border-red-500 rounded">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-red-700 text-sm">{error}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={loading || (!businessHours.isOpen && adminSettings.blockOutsideHours)}
+              className="w-full h-12 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-400 text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:hover:scale-100"
+            >
+              <Zap className="w-5 h-5 mr-2" />
+              {loading ? 'Calculando distância...' : 'Solicitar Orçamento'}
+            </Button>
+          </form>
+
+          {/* Result */}
+          {showResult && distance !== null && (
+            <div className={`mt-8 p-6 ${isDarkMode ? 'bg-gray-700' : 'bg-orange-50'} rounded-lg border-2 border-orange-300 animate-fade-in`}>
+              <h3 className={`text-xl font-bold ${textClass} mb-4`}>✓ Orçamento Calculado</h3>
+              
+              <div className="space-y-3 mb-6">
+                <div className={`p-3 ${isDarkMode ? 'bg-gray-600' : 'bg-white'} rounded`}>
+                  <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Distância estimada</p>
+                  <p className={`text-2xl font-bold text-orange-500`}>{distance.toFixed(1)} km</p>
+                </div>
+
+                {adminSettings.showPrices && (
+                  <div className={`p-3 ${isDarkMode ? 'bg-gray-600' : 'bg-white'} rounded`}>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Valor estimado</p>
+                    <p className={`text-2xl font-bold text-orange-500`}>
+                      R$ {(distance * 2.5 * adminSettings.priceMultiplier).toFixed(2)}
+                    </p>
+                  </div>
+                )}
+
+                {!adminSettings.showPrices && (
+                  <div className={`p-3 ${isDarkMode ? 'bg-gray-600' : 'bg-white'} rounded`}>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Valor</p>
+                    <p className={`text-2xl font-bold text-orange-500`}>A confirmar</p>
+                  </div>
+                )}
+              </div>
+
+              <Button
+                onClick={handleSendWhatsApp}
+                className="w-full h-12 bg-green-500 hover:bg-green-600 text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+              >
+                <MessageCircle className="w-5 h-5 mr-2" />
+                Enviar via WhatsApp
+              </Button>
+
+              <button
+                onClick={() => {
+                  setShowResult(false);
+                  setDistance(null);
+                  setOrigin('');
+                  setDestination('');
+                }}
+                className={`w-full mt-3 py-2 ${isDarkMode ? 'bg-gray-600 hover:bg-gray-500 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'} font-semibold rounded-lg transition-colors`}
+              >
+                Novo Orçamento
+              </button>
+            </div>
+          )}
+        </Card>
+
+        {/* Info Box */}
+        <div className={`max-w-2xl mx-auto mt-8 p-6 ${cardBgClass} border-2 ${borderClass} rounded-lg`}>
+          <div className="flex items-start gap-3">
+            <Clock className={`w-6 h-6 ${isDarkMode ? 'text-orange-400' : 'text-orange-500'} flex-shrink-0 mt-1`} />
+            <div>
+              <h4 className={`font-bold ${textClass} mb-2`}>Horário de Funcionamento</h4>
+              <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+                Segunda a Sexta: 7:00 - 18:00<br />
+                Sábado: 8:00 - 12:00<br />
+                Domingo: Fechado
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
