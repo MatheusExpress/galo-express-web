@@ -9,19 +9,26 @@ interface AdminSettings {
   priceMultiplier: number;
   maintenanceMode: boolean;
   blockOutsideHours: boolean;
-  theme: 'light' | 'dark';
 }
 
 export default function AdminPanel() {
   const [isOpen, setIsOpen] = useState(false);
   const [settings, setSettings] = useState<AdminSettings>(() => {
     const saved = localStorage.getItem('galo-admin-settings');
-    return saved ? JSON.parse(saved) : {
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return {
+        showPrices: parsed.showPrices ?? false,
+        priceMultiplier: parsed.priceMultiplier ?? 1,
+        maintenanceMode: parsed.maintenanceMode ?? false,
+        blockOutsideHours: parsed.blockOutsideHours ?? true,
+      };
+    }
+    return {
       showPrices: false,
       priceMultiplier: 1,
       maintenanceMode: false,
       blockOutsideHours: true,
-      theme: 'light'
     };
   });
 
@@ -39,15 +46,7 @@ export default function AdminPanel() {
 
   useEffect(() => {
     localStorage.setItem('galo-admin-settings', JSON.stringify(settings));
-    // Disparar evento de storage para atualizar componentes
     window.dispatchEvent(new Event('storage'));
-    
-    // Aplicar tema ao documento
-    if (settings.theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
   }, [settings]);
 
   if (!isOpen) return null;
@@ -69,7 +68,6 @@ export default function AdminPanel() {
         </div>
 
         <div className="p-6 space-y-6 max-h-[80vh] overflow-y-auto">
-          {/* Info Section */}
           <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
             <div className="flex gap-2">
               <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
@@ -83,7 +81,6 @@ export default function AdminPanel() {
             </div>
           </div>
 
-          {/* Show Prices Toggle */}
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">
               Mostrar campo de preço por km
@@ -110,14 +107,8 @@ export default function AdminPanel() {
                 {settings.showPrices ? 'Visível' : 'Oculto'}
               </span>
             </div>
-            <p className="text-xs text-gray-500">
-              {settings.showPrices 
-                ? '✓ Clientes podem calcular valor por km' 
-                : '✓ Clientes enviam endereços, você define o valor'}
-            </p>
           </div>
 
-          {/* Price Multiplier - Only show when prices are visible */}
           {settings.showPrices && (
             <div className="space-y-2 p-4 bg-orange-50 rounded-lg border border-orange-200">
               <label className="block text-sm font-semibold text-gray-700">
@@ -137,13 +128,9 @@ export default function AdminPanel() {
                   {(settings.priceMultiplier * 100).toFixed(0)}%
                 </span>
               </div>
-              <p className="text-xs text-gray-500">
-                Ajuste o valor dos fretes (ex: 1.2 = 20% mais caro)
-              </p>
             </div>
           )}
 
-          {/* Maintenance Mode */}
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">
               Modo de manutenção
@@ -165,12 +152,8 @@ export default function AdminPanel() {
                 {settings.maintenanceMode ? 'Ativado' : 'Desativado'}
               </span>
             </div>
-            <p className="text-xs text-gray-500">
-              Quando ativado, o site exibirá mensagem de manutenção.
-            </p>
           </div>
 
-          {/* Block Outside Hours */}
           <div className="space-y-2 p-4 bg-blue-50 rounded-lg border border-blue-200">
             <label className="block text-sm font-semibold text-gray-700">
               Bloquear fora do horário
@@ -192,43 +175,8 @@ export default function AdminPanel() {
                 {settings.blockOutsideHours ? 'Ativado' : 'Desativado'}
               </span>
             </div>
-            <p className="text-xs text-gray-500">
-              {settings.blockOutsideHours 
-                ? '✓ Formulário bloqueado fora do horário' 
-                : '✓ Formulário liberado 24/7 (clientes podem solicitar qualquer hora)'}
-            </p>
           </div>
 
-          {/* Theme Toggle */}
-          <div className="space-y-2 p-4 bg-purple-50 rounded-lg border border-purple-200">
-            <label className="block text-sm font-semibold text-gray-700">
-              Tema do Site
-            </label>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setSettings({ ...settings, theme: settings.theme === 'light' ? 'dark' : 'light' })}
-                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
-                  settings.theme === 'dark' ? 'bg-orange-500' : 'bg-gray-300'
-                }`}
-              >
-                <span
-                  className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
-                    settings.theme === 'dark' ? 'translate-x-7' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-              <span className="text-sm text-gray-600">
-                {settings.theme === 'dark' ? '🌟 Escuro' : '☀️ Claro'}
-              </span>
-            </div>
-            <p className="text-xs text-gray-500">
-              {settings.theme === 'dark'
-                ? '✓ Tema escuro ativado para melhor visualização noturna'
-                : '✓ Tema claro ativado para melhor visualização diurna'}
-            </p>
-          </div>
-
-          {/* Status Info */}
           <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
             <h3 className="text-sm font-bold text-gray-700 mb-3">📊 Status do Sistema</h3>
             <ul className="text-xs text-gray-600 space-y-2">
@@ -238,32 +186,11 @@ export default function AdminPanel() {
               </li>
               <li className="flex items-center gap-2">
                 <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                Banco de dados: Conectado
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                 API WhatsApp: Ativo
               </li>
-              <li className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                Rastreamento: Funcionando
-              </li>
             </ul>
           </div>
 
-          {/* Current Settings Summary */}
-          <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
-            <h3 className="text-sm font-bold text-gray-700 mb-2">⚙️ Configuração Atual</h3>
-            <ul className="text-xs text-gray-600 space-y-1">
-              <li>• Modo Orçamento: <strong>{settings.showPrices ? 'COM preço/km' : 'SEM preço/km'}</strong></li>
-              <li>• Multiplicador: <strong>{(settings.priceMultiplier * 100).toFixed(0)}%</strong></li>
-              <li>• Manutenção: <strong>{settings.maintenanceMode ? 'ATIVA' : 'Inativa'}</strong></li>
-              <li>• Bloqueio por Horário: <strong>{settings.blockOutsideHours ? 'ATIVO' : 'Inativo'}</strong></li>
-              <li>• Tema: <strong>{settings.theme === 'dark' ? 'ESCURO' : 'CLARO'}</strong></li>
-            </ul>
-          </div>
-
-          {/* Reset Button */}
           <Button
             onClick={() => {
               setSettings({
@@ -271,7 +198,6 @@ export default function AdminPanel() {
                 priceMultiplier: 1,
                 maintenanceMode: false,
                 blockOutsideHours: true,
-                theme: 'light'
               });
             }}
             variant="outline"
@@ -281,7 +207,6 @@ export default function AdminPanel() {
             Restaurar Padrões
           </Button>
 
-          {/* Close Button */}
           <Button
             onClick={() => setIsOpen(false)}
             className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold"
