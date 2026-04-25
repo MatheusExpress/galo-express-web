@@ -130,7 +130,7 @@ export default function Simulator() {
     const pricePerKm = 2.5;
     const estimatedPrice = (distance * pricePerKm * adminSettings.priceMultiplier).toFixed(2);
 
-    const message = `🚚 *SOLICITAÇÃO DE ORÇAMENTO - GALO EXPRESS*\n\n📍 *Endereço de Coleta:*\n${origin}\n\n📍 *Endereço de Entrega:*\n${destination}\n\n📏 *Distância:*\n${distance.toFixed(1)} km\n\n💰 *Valor: A confirmar*\n\n---\nCampo Largo, PR\n(41) 98416-7897`;
+    const message = `🚚 *SOLICITAÇÃO DE ORÇAMENTO - GALO EXPRESS*\n\n📍 *Endereço de Coleta:*\n${origin}\n\n📍 *Endereço de Entrega:*\n${destination}\n\n📏 *Distância Estimada:*\n${distance.toFixed(1)} km\n\n💰 *Valor:* A confirmar conforme rota\n\n⏱️ *Prazo:* Consulte disponibilidade\n\n---\n\n*Galo Express - Entregas Rápidas*\n📱 (41) 98416-7897\n📍 Campo Largo, PR\n🌍 Cobertura: Grande Curitiba + Região\n\n_Aguardando confirmação de disponibilidade_`;
 
     const whatsappUrl = `https://wa.me/5541984167897?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
