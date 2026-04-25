@@ -24,7 +24,7 @@ export default function Features() {
     {
       icon: <MapPin className="w-12 h-12" />,
       title: 'Cobertura Total',
-      description: 'Atendemos Campo Largo e região metropolitana.',
+      description: 'Grande Curitiba, Campo Largo, Araçuaia, Pinhais, Colombo e Balsa Nova.',
       color: 'from-orange-500 to-red-500'
     }
   ];

@@ -9,7 +9,7 @@ export default function CoverageMap() {
             Área de Cobertura
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Atendemos Campo Largo e região metropolitana de Curitiba
+            Cobertura completa em Grande Curitiba, Campo Largo, Araçuaia, Pinhais, Colombo e Balsa Nova
           </p>
         </div>
 
@@ -66,12 +66,12 @@ export default function CoverageMap() {
             <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border-l-4 border-orange-500">
               <h3 className="font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-orange-500" />
-                Cobertura Principal
+                Áreas Principais
               </h3>
               <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
                 <li>✓ Campo Largo (todos os bairros)</li>
-                <li>✓ Centro, Xaxim, Palmital</li>
-                <li>✓ Guajuvira, Itapoã</li>
+                <li>✓ Araçuaia (todos os bairros)</li>
+                <li>✓ Pinhais, Colombo, Balsa Nova</li>
               </ul>
             </div>
 
@@ -81,10 +81,10 @@ export default function CoverageMap() {
                 Cidades Atendidas
               </h3>
               <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-                <li>✓ Curitiba (zona sul)</li>
-                <li>✓ Pinhais, Colombo</li>
-                <li>✓ Araucária, Fazenda Rio Grande</li>
-                <li>✓ Almirante Tamandaré, Piraquara</li>
+                <li>✓ Curitiba (todas as zonas)</li>
+                <li>✓ Pinhais, Colombo, Balsa Nova</li>
+                <li>✓ Piraquara, Fazenda Rio Grande</li>
+                <li>✓ Almirante Tamandaré e região</li>
               </ul>
             </div>
 

@@ -52,7 +52,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-orange-500 mt-1" />
-                <span>Campo Largo, PR - Brasil</span>
+                <span>Campo Largo, PR - Brasil<br/><span className="text-xs text-gray-500">Cobertura: Grande Curitiba, Araçuaia, Pinhais, Colombo, Balsa Nova</span></span>
               </li>
             </ul>
           </div>

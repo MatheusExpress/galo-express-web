@@ -24,7 +24,7 @@ export default function Hero() {
               </h1>
               
               <p className="text-xl text-gray-300 leading-relaxed">
-                Especializada em entregas de materiais, documentos e peças. Rastreamento em tempo real, segurança garantida e preços transparentes.
+                Especializada em entregas de materiais, documentos e peças. Cobertura em Grande Curitiba, Campo Largo, Araçuaia, Pinhais, Colombo e Balsa Nova. Rastreamento em tempo real, segurança garantida e preços transparentes.
               </p>
             </div>
 
@@ -89,7 +89,7 @@ export default function Hero() {
                 <MapPin className="w-6 h-6 text-orange-500" />
               </div>
               <h3 className="text-lg font-bold text-white mb-2">Cobertura</h3>
-              <p className="text-sm text-gray-400">Campo Largo e região</p>
+              <p className="text-sm text-gray-400">Grande Curitiba, Campo Largo, Araçuaia, Pinhais, Colombo e Balsa Nova</p>
             </div>
           </div>
         </div>
