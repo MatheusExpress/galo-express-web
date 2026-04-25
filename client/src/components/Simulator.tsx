@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { MessageCircle, Zap, AlertCircle, Clock } from 'lucide-react';
+import { MessageCircle, Zap, AlertCircle, Clock, X } from 'lucide-react';
 import { useBusinessHours } from '@/hooks/useBusinessHours';
 import { useGeocoding } from '@/hooks/useGeocoding';
+import { useAddressAutocomplete } from '@/hooks/useAddressAutocomplete';
 
 interface AdminSettings {
   showPrices: boolean;
@@ -16,6 +17,8 @@ interface AdminSettings {
 export default function Simulator() {
   const businessHours = useBusinessHours();
   const { calculateDistance, loading: geoLoading, error: geoError, setError: setGeoError } = useGeocoding();
+  const { suggestions: originSuggestions, getSuggestions: getOriginSuggestions, clearSuggestions: clearOriginSuggestions } = useAddressAutocomplete();
+  const { suggestions: destSuggestions, getSuggestions: getDestSuggestions, clearSuggestions: clearDestSuggestions } = useAddressAutocomplete();
   
   const [adminSettings, setAdminSettings] = useState<AdminSettings>({
     showPrices: false,
@@ -29,6 +32,8 @@ export default function Simulator() {
   const [showResult, setShowResult] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showOriginDropdown, setShowOriginDropdown] = useState(false);
+  const [showDestDropdown, setShowDestDropdown] = useState(false);
 
   // Carregar configurações do admin panel
   useEffect(() => {
@@ -50,6 +55,40 @@ export default function Simulator() {
       clearInterval(interval);
     };
   }, []);
+
+  const handleOriginChange = (value: string) => {
+    setOrigin(value);
+    if (value.trim()) {
+      getOriginSuggestions(value);
+      setShowOriginDropdown(true);
+    } else {
+      clearOriginSuggestions();
+      setShowOriginDropdown(false);
+    }
+  };
+
+  const handleDestinationChange = (value: string) => {
+    setDestination(value);
+    if (value.trim()) {
+      getDestSuggestions(value);
+      setShowDestDropdown(true);
+    } else {
+      clearDestSuggestions();
+      setShowDestDropdown(false);
+    }
+  };
+
+  const selectOriginSuggestion = (suggestion: string) => {
+    setOrigin(suggestion);
+    setShowOriginDropdown(false);
+    clearOriginSuggestions();
+  };
+
+  const selectDestinationSuggestion = (suggestion: string) => {
+    setDestination(suggestion);
+    setShowDestDropdown(false);
+    clearDestSuggestions();
+  };
 
   const handleCalculate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,7 +127,7 @@ export default function Simulator() {
   const handleSendWhatsApp = () => {
     if (!distance) return;
 
-    const pricePerKm = 2.5; // Preço padrão por km
+    const pricePerKm = 2.5;
     const estimatedPrice = (distance * pricePerKm * adminSettings.priceMultiplier).toFixed(2);
 
     const message = `🚚 *SOLICITAÇÃO DE ORÇAMENTO - GALO EXPRESS*\n\n📍 *Endereço de Coleta:*\n${origin}\n\n📍 *Endereço de Entrega:*\n${destination}\n\n📏 *Distância:*\n${distance.toFixed(1)} km\n\n💰 *Valor: A confirmar*\n\n---\nCampo Largo, PR\n(41) 98416-7897`;
@@ -103,6 +142,8 @@ export default function Simulator() {
   const cardBgClass = isDarkMode ? 'bg-gray-800' : 'bg-white';
   const borderClass = isDarkMode ? 'border-gray-700' : 'border-orange-200';
   const inputBgClass = isDarkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-white border-orange-200';
+  const dropdownBgClass = isDarkMode ? 'bg-gray-700' : 'bg-white';
+  const dropdownHoverClass = isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-orange-50';
 
   return (
     <section id="simulator" className={`py-16 ${bgClass} transition-colors duration-300`}>
@@ -127,38 +168,74 @@ export default function Simulator() {
         <Card className={`max-w-2xl mx-auto p-8 ${cardBgClass} border-2 ${borderClass}`}>
           <form onSubmit={handleCalculate} className="space-y-6">
             {/* Origin Address */}
-            <div className="space-y-2">
+            <div className="space-y-2 relative">
               <label className={`block text-sm font-semibold ${textClass}`}>
                 📍 Endereço de Coleta
               </label>
               <Input
                 type="text"
-                placeholder="Ex: Rua das Flores, 123, Centro, Campo Largo"
+                placeholder="Ex: Rua das Flores, Centro, Campo Largo"
                 value={origin}
-                onChange={(e) => setOrigin(e.target.value)}
+                onChange={(e) => handleOriginChange(e.target.value)}
+                onFocus={() => origin.trim() && setShowOriginDropdown(true)}
                 disabled={loading || (!businessHours.isOpen && adminSettings.blockOutsideHours)}
                 className={`h-12 ${inputBgClass} placeholder-gray-500 font-medium`}
               />
+              
+              {/* Origin Suggestions Dropdown */}
+              {showOriginDropdown && originSuggestions.length > 0 && (
+                <div className={`absolute top-full left-0 right-0 mt-1 ${dropdownBgClass} border-2 ${borderClass} rounded-lg shadow-lg z-10`}>
+                  {originSuggestions.map((suggestion, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => selectOriginSuggestion(suggestion)}
+                      className={`w-full text-left px-4 py-3 ${dropdownHoverClass} transition-colors first:rounded-t-lg last:rounded-b-lg ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}
+                    >
+                      📍 {suggestion}
+                    </button>
+                  ))}
+                </div>
+              )}
+              
               <p className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
-                Inclua rua, número, bairro e cidade
+                Digite para ver sugestões
               </p>
             </div>
 
             {/* Destination Address */}
-            <div className="space-y-2">
+            <div className="space-y-2 relative">
               <label className={`block text-sm font-semibold ${textClass}`}>
                 📍 Endereço de Entrega
               </label>
               <Input
                 type="text"
-                placeholder="Ex: Avenida Brasil, 456, Xaxim, Campo Largo"
+                placeholder="Ex: Avenida Brasil, Xaxim, Campo Largo"
                 value={destination}
-                onChange={(e) => setDestination(e.target.value)}
+                onChange={(e) => handleDestinationChange(e.target.value)}
+                onFocus={() => destination.trim() && setShowDestDropdown(true)}
                 disabled={loading || (!businessHours.isOpen && adminSettings.blockOutsideHours)}
                 className={`h-12 ${inputBgClass} placeholder-gray-500 font-medium`}
               />
+              
+              {/* Destination Suggestions Dropdown */}
+              {showDestDropdown && destSuggestions.length > 0 && (
+                <div className={`absolute top-full left-0 right-0 mt-1 ${dropdownBgClass} border-2 ${borderClass} rounded-lg shadow-lg z-10`}>
+                  {destSuggestions.map((suggestion, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => selectDestinationSuggestion(suggestion)}
+                      className={`w-full text-left px-4 py-3 ${dropdownHoverClass} transition-colors first:rounded-t-lg last:rounded-b-lg ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}
+                    >
+                      📍 {suggestion}
+                    </button>
+                  ))}
+                </div>
+              )}
+              
               <p className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
-                Inclua rua, número, bairro e cidade
+                Digite para ver sugestões
               </p>
             </div>
 
