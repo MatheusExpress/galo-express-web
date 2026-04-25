@@ -8,92 +8,124 @@ export default function Hero() {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      <div className="container">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Left Content - Text */}
+    <section className="relative bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-red-600 rounded-full mix-blend-multiply filter blur-3xl"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-600 rounded-full mix-blend-multiply filter blur-3xl"></div>
+      </div>
+
+      <div className="container relative z-10 py-20 lg:py-32">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
           <div className="space-y-8">
-            <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/30 text-orange-400 px-4 py-2 rounded-full font-semibold text-sm">
-                <Zap className="w-4 h-4" />
-                Logística Rápida e Confiável
-              </div>
-              
-              <h1 className="text-5xl lg:text-6xl font-bold text-white leading-tight">
-                Entregas profissionais em <span className="text-orange-500">tempo recorde</span>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-600/20 border border-red-500/50 rounded-full">
+              <Zap className="w-4 h-4 text-red-500" />
+              <span className="text-sm font-semibold text-red-400">Logística Rápida e Confiável</span>
+            </div>
+
+            {/* Main Heading */}
+            <div>
+              <h1 className="text-5xl lg:text-6xl font-black leading-tight mb-4">
+                Entregas
+                <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">
+                  profissionais em
+                </span>
+                <br />
+                tempo recorde
               </h1>
-              
-              <p className="text-xl text-gray-300 leading-relaxed">
+              <p className="text-xl text-gray-300 leading-relaxed mt-6">
                 Especializada em entregas de materiais, documentos e peças. Cobertura em Grande Curitiba, Campo Largo, Araçuaia, Pinhais, Colombo e Balsa Nova. Rastreamento em tempo real, segurança garantida e preços transparentes.
               </p>
             </div>
 
-            {/* CTA Button */}
-            <Button
-              onClick={scrollToSimulator}
-              className="w-full md:w-auto h-14 bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2"
-            >
-              Solicitar Orçamento
-              <ArrowRight className="w-5 h-5" />
-            </Button>
+            {/* Features Grid */}
+            <div className="grid grid-cols-2 gap-4 pt-4">
+              <div className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-4 hover:border-red-500/50 transition-all">
+                <div className="flex items-center gap-3 mb-2">
+                  <Zap className="w-5 h-5 text-red-500" />
+                  <span className="font-bold text-lg">Rápido</span>
+                </div>
+                <p className="text-sm text-gray-400">Entregas em tempo recorde</p>
+              </div>
+              <div className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-4 hover:border-red-500/50 transition-all">
+                <div className="flex items-center gap-3 mb-2">
+                  <Shield className="w-5 h-5 text-red-500" />
+                  <span className="font-bold text-lg">Seguro</span>
+                </div>
+                <p className="text-sm text-gray-400">Rastreamento em tempo real</p>
+              </div>
+              <div className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-4 hover:border-red-500/50 transition-all">
+                <div className="flex items-center gap-3 mb-2">
+                  <Clock className="w-5 h-5 text-red-500" />
+                  <span className="font-bold text-lg">Pontual</span>
+                </div>
+                <p className="text-sm text-gray-400">Horários respeitados</p>
+              </div>
+              <div className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-4 hover:border-red-500/50 transition-all">
+                <div className="flex items-center gap-3 mb-2">
+                  <MapPin className="w-5 h-5 text-red-500" />
+                  <span className="font-bold text-lg">Cobertura</span>
+                </div>
+                <p className="text-sm text-gray-400">Grande Curitiba + Região</p>
+              </div>
+            </div>
 
-            {/* Trust Indicators */}
-            <div className="grid grid-cols-3 gap-4 pt-8 border-t border-gray-700">
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <Button
+                onClick={scrollToSimulator}
+                className="h-14 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 px-8"
+              >
+                <Zap className="w-5 h-5 mr-2" />
+                Solicitar Orçamento
+              </Button>
+              <Button
+                onClick={scrollToSimulator}
+                variant="outline"
+                className="h-14 border-2 border-red-500 text-white hover:bg-red-600/10 font-bold text-lg rounded-lg px-8"
+              >
+                Simular Frete
+              </Button>
+            </div>
+
+            {/* Stats */}
+            <div className="flex gap-8 pt-4 border-t border-gray-700">
               <div>
-                <div className="text-3xl font-bold text-orange-500">500+</div>
-                <p className="text-sm text-gray-400">Entregas/mês</p>
+                <p className="text-3xl font-black text-red-500">500+</p>
+                <p className="text-sm text-gray-400">Entregas realizadas</p>
               </div>
               <div>
-                <div className="text-3xl font-bold text-orange-500">15min</div>
+                <p className="text-3xl font-black text-red-500">15min</p>
                 <p className="text-sm text-gray-400">Tempo médio</p>
               </div>
               <div>
-                <div className="text-3xl font-bold text-orange-500">99%</div>
+                <p className="text-3xl font-black text-red-500">99%</p>
                 <p className="text-sm text-gray-400">Satisfação</p>
               </div>
             </div>
           </div>
 
-          {/* Right Content - Features Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* Feature 1 */}
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-lg p-6 hover:border-orange-500/50 transition-colors">
-              <div className="w-12 h-12 bg-orange-500/10 rounded-lg flex items-center justify-center mb-4">
-                <Zap className="w-6 h-6 text-orange-500" />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">Rápido</h3>
-              <p className="text-sm text-gray-400">Entregas em tempo recorde</p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-lg p-6 hover:border-orange-500/50 transition-colors">
-              <div className="w-12 h-12 bg-orange-500/10 rounded-lg flex items-center justify-center mb-4">
-                <Shield className="w-6 h-6 text-orange-500" />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">Seguro</h3>
-              <p className="text-sm text-gray-400">Rastreamento em tempo real</p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-lg p-6 hover:border-orange-500/50 transition-colors">
-              <div className="w-12 h-12 bg-orange-500/10 rounded-lg flex items-center justify-center mb-4">
-                <Clock className="w-6 h-6 text-orange-500" />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">Pontual</h3>
-              <p className="text-sm text-gray-400">Horários respeitados</p>
-            </div>
-
-            {/* Feature 4 */}
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-lg p-6 hover:border-orange-500/50 transition-colors">
-              <div className="w-12 h-12 bg-orange-500/10 rounded-lg flex items-center justify-center mb-4">
-                <MapPin className="w-6 h-6 text-orange-500" />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">Cobertura</h3>
-              <p className="text-sm text-gray-400">Grande Curitiba, Campo Largo, Araçuaia, Pinhais, Colombo e Balsa Nova</p>
+          {/* Right Image */}
+          <div className="relative hidden lg:block">
+            <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 to-orange-600/20 rounded-2xl blur-2xl"></div>
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663596602135/YGdGE37RA6xvzrU8Ai6VXz/moto-hero-JCm2YK3mwhXPrxEE2aRjS3.webp"
+              alt="Moto em ação"
+              className="relative w-full h-auto rounded-2xl shadow-2xl object-cover"
+            />
+            {/* Floating Badge */}
+            <div className="absolute bottom-8 left-8 bg-green-500 text-white px-4 py-3 rounded-lg font-bold shadow-lg">
+              ✓ Entrega Garantida
             </div>
           </div>
         </div>
       </div>
+
+      {/* Bottom Wave */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent opacity-5"></div>
     </section>
   );
 }
