@@ -36,7 +36,13 @@ export default function Header() {
 
         {/* CTA Button */}
         <div className="hidden md:flex items-center gap-4">
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+          <Button 
+            onClick={() => {
+              const element = document.getElementById('simulator');
+              element?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+          >
             Solicitar Entrega
           </Button>
         </div>
@@ -63,7 +69,14 @@ export default function Header() {
             <a href="#contact" className="block text-gray-700 font-semibold hover:text-orange-500 transition-colors">
               Contato
             </a>
-            <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg">
+            <Button 
+              onClick={() => {
+                setIsOpen(false);
+                const element = document.getElementById('simulator');
+                element?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg"
+            >
               Solicitar Entrega
             </Button>
           </nav>
