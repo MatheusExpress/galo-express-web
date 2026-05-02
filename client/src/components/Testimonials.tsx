@@ -1,15 +1,7 @@
 import { useState } from 'react';
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
 
-interface Testimonial {
-  name: string;
-  company: string;
-  text: string;
-  rating: number;
-  avatar: string;
-}
-
-const testimonials: Testimonial[] = [
+const testimonials = [
   {
     name: 'João Silva',
     company: 'Silva Comércio',
@@ -73,46 +65,42 @@ export default function Testimonials() {
   const current = testimonials[currentIndex];
 
   return (
-    <section className="py-16 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+    <section className="py-16 bg-gradient-to-br from-gray-50 to-white transition-colors duration-300">
       <div className="container">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
             O que Nossos Clientes Dizem
           </h2>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600">
             Confira os depoimentos de empresas que confiam na Galo Express
           </p>
         </div>
-
         {/* Carousel */}
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 border-2 border-orange-200 dark:border-orange-600">
+          <div className="bg-white rounded-lg shadow-lg p-8 border-2 border-orange-200">
             {/* Star Rating */}
             <div className="flex justify-center gap-1 mb-4">
               {[...Array(current.rating)].map((_, i) => (
                 <Star key={i} className="w-5 h-5 fill-orange-500 text-orange-500" />
               ))}
             </div>
-
             {/* Testimonial Text */}
-            <p className="text-center text-gray-700 dark:text-gray-300 text-lg mb-6 italic">
+            <p className="text-center text-gray-700 text-lg mb-6 italic">
               "{current.text}"
             </p>
-
             {/* Author */}
             <div className="text-center mb-6">
               <p className="text-2xl mb-2">{current.avatar}</p>
-              <p className="font-bold text-gray-900 dark:text-white">{current.name}</p>
+              <p className="font-bold text-gray-900">{current.name}</p>
               <p className="text-sm text-orange-500 font-semibold">{current.company}</p>
             </div>
-
             {/* Navigation */}
             <div className="flex justify-center gap-4">
               <button
                 onClick={prev}
-                className="p-2 bg-orange-100 dark:bg-orange-900 hover:bg-orange-200 dark:hover:bg-orange-800 rounded-full transition-colors"
+                className="p-2 bg-orange-100 hover:bg-orange-200 rounded-full transition-colors"
               >
-                <ChevronLeft className="w-6 h-6 text-orange-600 dark:text-orange-300" />
+                <ChevronLeft className="w-6 h-6 text-orange-600" />
               </button>
               <div className="flex items-center gap-2">
                 {testimonials.map((_, i) => (
@@ -122,26 +110,24 @@ export default function Testimonials() {
                     className={`w-2 h-2 rounded-full transition-colors ${
                       i === currentIndex
                         ? 'bg-orange-500'
-                        : 'bg-gray-300 dark:bg-gray-600'
+                        : 'bg-gray-300'
                     }`}
                   />
                 ))}
               </div>
               <button
                 onClick={next}
-                className="p-2 bg-orange-100 dark:bg-orange-900 hover:bg-orange-200 dark:hover:bg-orange-800 rounded-full transition-colors"
+                className="p-2 bg-orange-100 hover:bg-orange-200 rounded-full transition-colors"
               >
-                <ChevronRight className="w-6 h-6 text-orange-600 dark:text-orange-300" />
+                <ChevronRight className="w-6 h-6 text-orange-600" />
               </button>
             </div>
           </div>
-
           {/* Counter */}
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm mt-4">
+          <p className="text-center text-gray-600 text-sm mt-4">
             {currentIndex + 1} de {testimonials.length}
           </p>
         </div>
-
         {/* CTA Button */}
         <div className="text-center mt-12">
           <button
